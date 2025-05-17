@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- List View: Guest Registration -->
+    <record id="view_hotel_guestregistration_list" model="ir.ui.view">
+        <field name="name">hotel.guestregistration.list</field>
+        <field name="model">hotel.guestregistration</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="roomname"/>
+                <field name="guestname"/>
+                <field name="datecreated"/>
+                <field name="datefromSched"/>
+                <field name="datetoSched"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View: Guest Registration -->
+    <record id="view_hotel_guestregistration_form" model="ir.ui.view">
+        <field name="name">hotel.guestregistration.form</field>
+        <field name="model">hotel.guestregistration</field>
+        <field name="arch" type="xml">
+            <form string="Guest Registration">
+                <header>
+                    <button name="action_reserve"
+                            string="Reserve"
+                            type="object"
+                            class="btn-primary"
+                            confirm="Tag registration as RESERVED?"
+                            groups="base.group_user"
+                            visible="state == 'draft'"/>
+                    
+                    <button name="action_checkin"
+                            string="Check IN"
+                            type="object"
+                            class="btn-primary"
+                            confirm="Tag registration as CHECKED IN?"
+                            visible="state in ['reserved', 'checkedin', 'checkedout']"/>
+
+                    <button name="action_checkout"
+                            string="Check OUT"
+                            type="object"
+                            class="btn-primary"
+                            confirm="Tag registration as CHECKED OUT?"
+                            visible="state == 'checkedin'"/>
+
+                    <button name="action_cancel"
+                            string="Cancel"
+                            type="object"
+                            class="btn-secondary"
+                            confirm="Tag registration as CANCELLED?"
+                            visible="state in ['draft', 'reserved']"/>
+
+                    <field name="state" widget="statusbar" statusbar_visible="DRAFT,RESERVED,CHECKEDIN,CHECKEDOUT,CANCELLED" nolabel="1"/>
+                </header>
+
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="room_id"/>
+                        <field name="guest_id"/>
+                        <field name="datecreated"/>
+                    </group>
+                    <group>
+                        <field name="datefromSched"/>
+                        <field name="datetoSched"/>
+                        <field name="datefromAct"/>
+                        <field name="datetoAct"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action: Guest Registration -->
+    <record id="action_guest_registration" model="ir.actions.act_window">
+        <field name="name">Guest Registration</field>
+        <field name="res_model">hotel.guestregistration</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first guest registration.
+            </p>
+        </field>
+    </record>
+
+    <!-- Guest Registration Menu -->
+    <menuitem id="menu_hotel_guestregistration"
+              name="Guest Registration"
+              parent="menu_hotel_masterlists"
+              action="action_guest_registration"
+              sequence="20"/>
+</odoo>
